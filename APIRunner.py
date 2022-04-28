@@ -7,21 +7,12 @@ from Customer import *
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-Customers = []
-Pets = []
+customerList = []
+petsList = []
 
 reader = open("owners.json", "r")
 PetOwners = json.load(reader)
 reader.close()
-
-def toString(itemList):
-    if len(itemList) == 1:
-        return itemList[0].name
-    else:
-        string = []
-        for item in itemList:
-            string.append(item.name)
-        return string
 
 for owner in PetOwners:
     id = owner.get("customerID")
@@ -29,97 +20,112 @@ for owner in PetOwners:
     age = owner.get("age")
     pets = owner.get("petIDs")
     obj = Customer(id,name,age,pets)
-    Customers.append(obj)
-    result = toString(Customers)
-
-print(result)
-
+    customerList.append(obj)
 
 reader = open("pets.json", "r")
 Pets = json.load(reader)
 reader.close()
 
+for pet in Pets:
+    petID = pet.get("petID")
+    name = pet.get("name")
+    type = pet.get("type")
+    age = pet.get("age")
+    ownerID = pet.get("ownerID")
+
+    if type == "Cat":
+        obj = Cat(petID,name,age,ownerID)
+    elif type == "Dog":
+        obj = Dog(petID,name,age,ownerID)
+    elif type == "Budgie":
+        obj = Budgie(petID,name,age,ownerID)
+    elif type == "Goldfish":
+        obj = Goldfish(petID,name,age,ownerID)    
+    elif type == "Snail":
+        obj = Snail(petID,name,age,ownerID)
+    else:
+        print("The vet doesn't treat that animal type.")
+
+    petsList.append(obj)
+
 @app.route('/', methods=['GET'])    #tell which HTTP method we are using (GET) and what route (extra bit of the URL) this method will be activated on.  In this case nothing and so home
 def home():
-    return "<h1>Welcome to the Virtual vet program.</h1><p>Search for details about animals and customers.</p>" #what the api returns
+    return "<h1>Welcome to the Virtual vet program.</h1><p>Choose from the options below!.</p><a href='/api/pets')>View all of our pets here</a><p></p><a href='/api/customers')>View all of our customers here</a><p></p><a href='/api/pets/show_owner')>Search for a specific pet's owner by ID here</a>" #what the api returns
 
 
 # A route to return all of the available entries in our collection of pet owners.
-@app.route('/api/customers/all', methods=['GET'])
+@app.route('/api/customers', methods=['GET'])
 def all_customers():
     return jsonify(PetOwners)
 
-@app.route('/api/pets/all', methods=['GET'])
-def all_pets():
-    return jsonify(Pets)
+@app.route('/api/pets', methods=['GET'])
+def get_pets():
+    
+    if 'id' in request.args:
+        id = int(request.args['id'])
+    else:
+        return jsonify(Pets)
+
+    results = []
+
+    for pet in Pets:
+        if pet['petID'] == id:
+            results.append(pet)
+
+    return jsonify(results)
+
 
 @app.route('/api/customers', methods=['GET'])
 def get_owner_by_id():
-    # Check if an ID was provided as part of the URL.
-    # If ID is provided, assign it to a variable.
-    # If no ID is provided, display an error in the browser.
+
     if 'id' in request.args:
         id = int(request.args['id'])
     else:
         return "Error: Customer is not in database."
 
-    # Create an empty list for our results
     results = []
 
-    # Loop through the data and match results that fit the requested ID.
-    # IDs are unique, but other fields might return many results
     for owner in PetOwners:
         if owner['customerID'] == id:
             results.append(owner)
 
-    # Use the jsonify function from Flask to convert our list of
-    # Python dictionaries to the JSON format.
     return jsonify(results)
 
 @app.route('/api/pets', methods=['GET'])
 def get_pet_by_id():
-    # Check if an ID was provided as part of the URL.
-    # If ID is provided, assign it to a variable.
-    # If no ID is provided, display an error in the browser.
+
     if 'id' in request.args:
         id = int(request.args['id'])
     else:
         return "Error: Pet is not in database."
 
-    # Create an empty list for our results
     results = []
 
-    # Loop through the data and match results that fit the requested ID.
-    # IDs are unique, but other fields might return many results
     for pet in Pets:
         if pet['petID'] == id:
             results.append(pet)
 
-    # Use the jsonify function from Flask to convert our list of
-    # Python dictionaries to the JSON format.
     return jsonify(results)
 
-@app.route('/api/customer/pets', methods=['GET'])
+@app.route('/api/pets/show_owner', methods=['GET'])
 def get_pets_by_customer():
-    # Check if an ID was provided as part of the URL.
-    # If ID is provided, assign it to a variable.
-    # If no ID is provided, display an error in the browser.
+
     if 'id' in request.args:
         id = int(request.args['id'])
     else:
-        return "Error: Pet is not in database."
+        return "Add a pet ID to the URL to search for their owner e.g. ?id=0"
 
-    # Create an empty list for our results
     results = []
-
-    # Loop through the data and match results that fit the requested ID.
-    # IDs are unique, but other fields might return many results
-    for pet in Pets:
-        if pet['ownerID'] == id:
-            results.append(pet)
-
-    # Use the jsonify function from Flask to convert our list of
-    # Python dictionaries to the JSON format.
-    return jsonify(results)
+    if id < len(petsList) and id >= 0:
+        for pet in petsList:
+            if pet.id == id:
+                check = pet.owner
+                for owner in customerList:
+                    if owner.id == check:
+                        return "The owner of " + pet.name + ", the " + str(pet.age) +" year old "+ pet.value.lower() + ", is " + owner.name
+    
+        return jsonify(results)
+    else:
+        return "Use a valid ID number"
 
 app.run()
