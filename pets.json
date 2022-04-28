@@ -1,0 +1,58 @@
+[
+  {
+    "petID": 0,
+    "ownerID": 0,
+    "name": "Benny",
+    "pet_type": "Cat",
+    "age": 14,
+    "alive": true
+  },
+  {
+    "petID": 1,
+    "ownerID": 0,
+    "name": "Ruby",
+    "pet_type": "Dog",
+    "age": 13,
+    "alive": true
+  },
+  {
+    "petID": 2,
+    "ownerID": 0,
+    "name": "Hollie",
+    "pet_type": "Dog",
+    "age": 13,
+    "alive": true
+  },
+  {
+    "petID": 3,
+    "ownerID": 1,
+    "name": "Charly",
+    "pet_type": "Cat",
+    "age": 5,
+    "alive": false
+  },
+  {
+    "petID": 4,
+    "ownerID": 1,
+    "name": "Gary",
+    "pet_type": "Snail",
+    "age": 2,
+    "alive": true
+  },
+  {
+    "petID": 5,
+    "ownerID": 2,
+    "name": "Oscar",
+    "pet_type": "Goldfish",
+    "age": 3,
+    "alive": true
+  },
+  {
+    "petID": 6,
+    "ownerID": 2,
+    "name": "Tweetie",
+    "pet_type": "Budgie",
+    "age": 4,
+    "alive": true
+  }
+]
