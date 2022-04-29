@@ -3,12 +3,8 @@ from abc import ABC, abstractmethod
 class Animal(ABC):
 
     #Attributes
-    id = None
-    age = None
-    name = None
     colour = None
     isAlive = True
-    owner = None
 
     #Constructors
     def __init__(self, id, name, age, owner):
