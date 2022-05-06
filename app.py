@@ -115,9 +115,7 @@ def get_pets_by_customer():
                         if petID == pet.id:
                             output += str(pet.name + ",")
                             if output[-1]==',':
-                                result = output[:-1] 
-                            else:
-                                output
+                                result = output[:-1]                           
                 return result
     else:
         return "ERROR: Use a valid ID number"
