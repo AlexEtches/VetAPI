@@ -1,8 +1,17 @@
 import json
-from operator import contains
+import unittest
 from flask import Flask, request, jsonify
 from Animal import *
 from Customer import *
+
+class TestMethods(unittest.TestCase):
+
+    def test_budgie_inheritance(self):
+        test = Budgie(100,"test",100,"testOwner")
+        self.assertEqual(test.reproduce(), "I lay eggs")
+
+    def test_home_is_string(self):
+        self.assertTrue(isinstance(home(), str))
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -138,5 +147,6 @@ def get_owner_by_pet():
     else:
         return "ERROR: Use a valid ID number"
         
-if __name__ == '__main__': 
+if __name__ == '__main__':
     app.run()
+    unittest.main()
