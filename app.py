@@ -1,5 +1,4 @@
 import json
-import unittest
 from flask import Flask, request, jsonify
 from Animal import *
 from Customer import *
